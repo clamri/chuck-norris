@@ -14,6 +14,15 @@
                              :label="category"
                              @click="getRandomJokeFromCategory(category)" />
             </section>
+
+            <section class="search-section">
+                <base-input label="Search"
+                            placeholder="search..."
+                            name="search"
+                            v-model="search"
+                            @input="searchJokeDebounced()" />
+            </section>
+
             <section class="joke-section">
                 <header>
                     <h2>{{ $t('homepage.title') }}</h2>
@@ -21,7 +30,7 @@
                 <article>
                     <div v-if="isLoading">{{ $t('homepage.jokeIsLoading') }}</div>
 
-                    <div v-if="joke"
+                    <div v-else-if="joke"
                          class="joke">
                         <p>{{ joke.value }}</p>
 
@@ -29,13 +38,16 @@
                              :src="joke.icon_url"
                              alt="" />
                     </div>
+
+                    <div v-else-if="hasError">{{ $t('homepage.jokeError') }}</div>
+                    <div v-else>{{ $t('homepage.jokeNotFound') }}</div>
                 </article>
                 <footer>
                     <base-button icon="icon-random"
                                  class="primary random-joke-btn"
                                  :label="$t('homepage.getRandomJokeButtonLabel')"
                                  :isLoading="isLoading"
-                                 @click="getRandomJoke()" />
+                                 @click="getSimilarJoke()" />
                 </footer>
             </section>
 
@@ -56,8 +68,12 @@ export default Vue.extend({
         return {
             joke: null as Joke | null,
             isLoading: true,
+            hasError: false,
             showExampleModal: false,
             selectedCategory: null as string | null,
+            search: null as string | null,
+            searchResults: null as { total: number; result: Joke[] } | null,
+            timeout: null as NodeJS.Timeout | null,
         };
     },
 
@@ -86,19 +102,67 @@ export default Vue.extend({
             this.getRandomJoke();
         },
         getRandomJokeFromCategory(category: string) {
+            this.search = null;
             this.selectedCategory = category;
             this.getRandomJoke();
         },
         async getRandomJoke() {
             this.isLoading = true;
             this.joke = null;
-            this.joke = await ChuckNorrisService.getRandomJoke({
-                ...(this.selectedCategory && {
-                    category: this.selectedCategory,
-                }),
-            });
+            try {
+                this.joke = await ChuckNorrisService.getRandomJoke({
+                    ...(this.selectedCategory && {
+                        category: this.selectedCategory,
+                    }),
+                });
+            } catch (e) {
+                this.hasError = true;
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        async searchJoke() {
+            this.selectedCategory = null;
+            if (this.search && this.search.length >= 3) {
+                this.isLoading = true;
+                this.joke = null;
+                try {
+                    this.searchResults = await ChuckNorrisService.searchJokes({
+                        query: this.search,
+                    });
+                    if (this.searchResults.total > 0) {
+                        this.joke = this.searchResults.result[0];
+                    }
+                } catch (e) {
+                    this.hasError = true;
+                } finally {
+                    this.isLoading = false;
+                }
+            }
+        },
+        getSimilarJoke() {
+            if (
+                this.search &&
+                this.searchResults &&
+                this.searchResults.total > 0
+            ) {
+                this.joke =
+                    this.searchResults.result[
+                        this.getRandomNumber(1, this.searchResults.total)
+                    ];
+            } else {
+                this.getRandomJoke();
+            }
+        },
+        getRandomNumber(min: number, max: number) {
+            return Math.floor(Math.random() * (max - min) + min);
+        },
+        searchJokeDebounced() {
+            if (this.timeout) clearTimeout(this.timeout);
 
-            this.isLoading = false;
+            this.timeout = setTimeout(() => {
+                this.searchJoke();
+            }, 1000);
         },
     },
 });
@@ -111,7 +175,7 @@ main {
 
 .joke-section {
     max-width: 50vw;
-    margin: 2rem auto;
+    margin: 0 auto;
 
     h2 {
         text-align: center;
@@ -143,6 +207,11 @@ main {
     .random-joke-btn {
         margin: 2rem auto;
     }
+}
+
+.search-section {
+    max-width: 50vw;
+    margin: 5rem auto;
 }
 
 .categories-section {
