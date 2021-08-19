@@ -26,6 +26,9 @@
                                  @click="getRandomJoke()" />
                 </footer>
             </section>
+
+            <modal-example v-if="showExampleModal"
+                           @close="closeExampleModal()" />
         </main>
     </div>
 </template>
@@ -41,14 +44,23 @@ export default Vue.extend({
         return {
             joke: null as Joke | null,
             isLoading: true,
+            showExampleModal: false,
         };
     },
 
     mounted() {
         this.getRandomJoke();
+
+        setTimeout(this.openExampleModal, 25000);
     },
 
     methods: {
+        openExampleModal() {
+            this.showExampleModal = true;
+        },
+        closeExampleModal() {
+            this.showExampleModal = false;
+        },
         async getRandomJoke() {
             this.isLoading = true;
             this.joke = null;
