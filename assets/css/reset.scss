@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto|Dekko&display=swap');
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-size: 1.5rem;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    color: var(--black);
+    word-spacing: 1px;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+    background-color: var(--background-color);
+}
+
+input,
+textarea,
+select,
+pre {
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+select {
+    -webkit-appearance: none;
+    -webkit-border-radius: 0px;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: var(--black);
+    display: inline-block;
+
+    &:hover, &:focus {
+        color: var(--primary-color) !important;
+        text-decoration: underline;
+    }
+}
+
+button {
+    border: none;
+    font-size: 1.5rem;
+    padding: 0;
+    background-color: transparent;
+    cursor: pointer;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    color: var(--black);
+}
