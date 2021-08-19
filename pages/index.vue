@@ -4,10 +4,10 @@
         <main>
             <section>
                 <header>
-                    <h2>The joke!</h2>
+                    <h2>{{ $t('homepage.title') }}</h2>
                 </header>
                 <article>
-                    <div v-if="isLoading">Joke is loading, please wait...</div>
+                    <div v-if="isLoading">{{ $t('homepage.jokeIsLoading') }}</div>
 
                     <div v-if="joke"
                          class="joke">
@@ -19,9 +19,9 @@
                     </div>
                 </article>
                 <footer>
-                    <base-button label="I want another joke"
-                                 icon="icon-random"
+                    <base-button icon="icon-random"
                                  class="primary random-joke-btn"
+                                 :label="$t('homepage.getRandomJokeButtonLabel')"
                                  :isLoading="isLoading"
                                  @click="getRandomJoke()" />
                 </footer>

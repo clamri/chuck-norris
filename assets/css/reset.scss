@@ -46,7 +46,7 @@ a {
     display: inline-block;
 
     &:hover, &:focus {
-        color: var(--primary-color) !important;
+        color: var(--primary-color);
         text-decoration: underline;
     }
 }
