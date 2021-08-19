@@ -1,5 +1,5 @@
 export interface Joke {
-    // categories: string[] // todo: fix later, not sure what the api returns
+    categories: string[];
     created_at: Date;
     icon_url: string;
     id: string;

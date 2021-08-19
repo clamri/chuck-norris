@@ -90,7 +90,8 @@ button {
             cursor: not-allowed;
         }
 
-        &:hover {
+        &:hover,
+        &:focus {
             box-shadow: inset 0 0 0 99999px rgba(255, 255, 255, 0.25);
         }
     }

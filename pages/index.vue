@@ -2,7 +2,19 @@
     <div>
         <app-header />
         <main>
-            <section>
+            <section class="categories-section">
+                <base-button class="badge"
+                             :class="{ 'is-active': !selectedCategory }"
+                             label="random"
+                             @click="resetCategoryAndGetRandomJoke()" />
+                <base-button v-for="category in categories"
+                             :key="category"
+                             class="badge"
+                             :class="{ 'is-active': selectedCategory === category }"
+                             :label="category"
+                             @click="getRandomJokeFromCategory(category)" />
+            </section>
+            <section class="joke-section">
                 <header>
                     <h2>{{ $t('homepage.title') }}</h2>
                 </header>
@@ -45,13 +57,21 @@ export default Vue.extend({
             joke: null as Joke | null,
             isLoading: true,
             showExampleModal: false,
+            selectedCategory: null as string | null,
         };
     },
 
     mounted() {
+        this.$store.dispatch("jokes/fetchCategories");
         this.getRandomJoke();
 
         setTimeout(this.openExampleModal, 25000);
+    },
+
+    computed: {
+        categories() {
+            return this.$store.getters["jokes/categories"];
+        },
     },
 
     methods: {
@@ -61,10 +81,23 @@ export default Vue.extend({
         closeExampleModal() {
             this.showExampleModal = false;
         },
+        resetCategoryAndGetRandomJoke() {
+            this.selectedCategory = null;
+            this.getRandomJoke();
+        },
+        getRandomJokeFromCategory(category: string) {
+            this.selectedCategory = category;
+            this.getRandomJoke();
+        },
         async getRandomJoke() {
             this.isLoading = true;
             this.joke = null;
-            this.joke = await ChuckNorrisService.getRandomJoke();
+            this.joke = await ChuckNorrisService.getRandomJoke({
+                ...(this.selectedCategory && {
+                    category: this.selectedCategory,
+                }),
+            });
+
             this.isLoading = false;
         },
     },
@@ -76,9 +109,9 @@ main {
     padding: 5rem;
 }
 
-section {
+.joke-section {
     max-width: 50vw;
-    margin: 0 auto;
+    margin: 2rem auto;
 
     h2 {
         text-align: center;
@@ -109,6 +142,26 @@ section {
 
     .random-joke-btn {
         margin: 2rem auto;
+    }
+}
+
+.categories-section {
+    .badge {
+        padding: 0.6rem 1.2rem;
+        font-size: 1.4rem;
+        border-radius: 999px;
+        margin: 0.5rem 1rem;
+        background-color: var(--white);
+
+        &:hover,
+        &:focus {
+            box-shadow: inset 0 0 0 99999px rgba(255, 255, 255, 0.25);
+        }
+
+        &.is-active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
     }
 }
 </style>
