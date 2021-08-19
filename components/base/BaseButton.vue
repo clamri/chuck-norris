@@ -15,31 +15,33 @@
     </button>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue";
+
+export default Vue.extend({
     props: {
         label: {
             type: String,
-            required: true
+            required: true,
         },
         isLoading: {
             type: Boolean,
-            default: false
+            default: false,
         },
         type: {
             type: String,
-            default: "button"
+            default: "button",
         },
         icon: {
-            type: String
-        }
+            type: String,
+        },
     },
     methods: {
         click() {
             this.$emit("click");
-        }
-    }
-};
+        },
+    },
+});
 </script>
 
 <style lang="scss" scoped>
