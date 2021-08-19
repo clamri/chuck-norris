@@ -18,6 +18,13 @@
                              alt="" />
                     </div>
                 </article>
+                <footer>
+                    <base-button label="I want another joke"
+                                 icon="icon-random"
+                                 class="primary random-joke-btn"
+                                 :isLoading="isLoading"
+                                 @click="getRandomJoke()" />
+                </footer>
             </section>
         </main>
     </div>
@@ -37,9 +44,16 @@ export default Vue.extend({
         };
     },
 
-    async mounted() {
-        this.joke = await ChuckNorrisService.getRandomJoke();
-        this.isLoading = false;
+    mounted() {
+        this.getRandomJoke();
+    },
+
+    methods: {
+        async getRandomJoke() {
+            this.isLoading = true;
+            this.joke = await ChuckNorrisService.getRandomJoke();
+            this.isLoading = false;
+        },
     },
 });
 </script>
@@ -77,6 +91,10 @@ section {
                 margin-left: 2rem;
             }
         }
+    }
+
+    .random-joke-btn {
+        margin: 2rem auto;
     }
 }
 </style>

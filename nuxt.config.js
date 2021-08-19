@@ -23,6 +23,7 @@ export default {
   css: [
     '~/assets/css/reset.scss',
     '~/assets/css/var.scss',
+    '~/assets/icomoon/style.scss',
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
