@@ -51,6 +51,7 @@ export default Vue.extend({
     methods: {
         async getRandomJoke() {
             this.isLoading = true;
+            this.joke = null;
             this.joke = await ChuckNorrisService.getRandomJoke();
             this.isLoading = false;
         },
@@ -83,6 +84,7 @@ section {
         .joke {
             display: flex;
             align-items: center;
+            justify-content: space-between;
 
             .joke-img {
                 width: 5rem;
